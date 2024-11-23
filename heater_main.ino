@@ -289,14 +289,13 @@ void displayMenu() {
 }
 
 void updateSetting() {
-
+  btnPushLong = btnPush = false;
   if (!digitalRead(encoderSW)) {
     if (btnPushTime == 0)
       btnPushTime = millis();
-  } else {
-    if (btnPushTime != 0 and millis() - btnPushTime > 1000) btnPushLong = true;
-    else if (btnPushTime != 0 and millis() - btnPushTime > 25) btnPush = true;
-    else btnPushLong = btnPush = false;
+  } else if (btnPushTime != 0 ){
+    if (millis() - btnPushTime > 1000) btnPushLong = true;
+    else if (millis() - btnPushTime > 25) btnPush = true;
     btnPushTime = 0;
   }
 
