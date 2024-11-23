@@ -67,12 +67,13 @@ void setup() {
   pinMode(heaterPin, OUTPUT);
   pinMode(encoderSW, INPUT_PULLUP);
 
-  defaultTargetTemp = targetTemp = readFromEEPROM(0);
-  maxTemp = readFromEEPROM(32);
-  defaultBoostMode = BoostMode = readFromEEPROM(40);
-  Kp = readFromEEPROM(8);
-  Ki = readFromEEPROM(16);
-  Kd = readFromEEPROM(24);
+  Kp = isnan(readFromEEPROM(8)) ? 1 : readFromEEPROM(8);
+  Ki = isnan(readFromEEPROM(16)) ? 0 : readFromEEPROM(16);
+  Kd = isnan(readFromEEPROM(24)) ? 0 : readFromEEPROM(24);
+
+  defaultTargetTemp = targetTemp = isnan(readFromEEPROM(0)) ? 50 : readFromEEPROM(0);
+  maxTemp = isnan(readFromEEPROM(32)) ? 480 : readFromEEPROM(32);
+  defaultBoostMode = BoostMode = isnan(readFromEEPROM(40)) ? 0 : readFromEEPROM(40);
 
   myEnc.write(targetTemp);
   myPID.SetMode(AUTOMATIC);
