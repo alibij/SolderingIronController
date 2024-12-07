@@ -123,53 +123,6 @@ void getTemperature() {
   }
 }
 
-// void serialPrint() {
-
-//   Serial.print("Current: ");
-//   Serial.print(currentTemp);
-//   Serial.print("C|Target: ");
-//   Serial.print(targetTemp);
-//   Serial.print("C|PWM: ");
-//   Serial.print(calculate_PWM);
-//   Serial.print("|Kp:");
-//   Serial.print(Kp);
-//   Serial.print("|Ki:");
-//   Serial.print(Ki);
-//   Serial.print("|Kd:");
-//   Serial.println(Kd);
-
-
-//   if (Serial.available() > 0) {
-//     char input = Serial.read();
-
-//     if (input == 'p') {
-//       char nextChar = Serial.read();  // Read next character
-//       if (nextChar == '+') {
-//         Kp += 0.1;  // Increase Kp by 0.1
-//       } else if (nextChar == '-') {
-//         Kp -= 0.1;  // Decrease Kp by 0.1
-//       }
-
-//     } else if (input == 'i') {
-//       char nextChar = Serial.read();  // Read next character
-//       if (nextChar == '+') {
-//         Ki += 0.1;  // Increase Ki by 0.1
-//       } else if (nextChar == '-') {
-//         Ki -= 0.1;  // Decrease Ki by 0.1
-//       }
-//     } else if (input == 'd') {
-//       char nextChar = Serial.read();  // Read next character
-//       if (nextChar == '+') {
-//         Kd += 0.1;  // Increase Kd by 0.1
-//       } else if (nextChar == '-') {
-//         Kd -= 0.1;  // Decrease Kd by 0.1
-//       }
-//     }
-//     myPID.SetTunings(Kp, Ki, Kd);
-//     Serial.println(" PID Updated ");
-//   }
-// }
-
 void displayHome(double pwm) {
   // display home data
   display.fillRect(5, 4, 68, 28, SSD1306_BLACK);
