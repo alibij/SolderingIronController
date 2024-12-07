@@ -98,6 +98,7 @@ This project is released under the **MIT License**, which allows free use, modif
 - Add over-temperature protection with automatic shutdown.
 - Implement a sleep mode to reduce power consumption when idle.
 - Expand menu functionality for more advanced customization options.
+- Add heater gun 
 
 ---
 
