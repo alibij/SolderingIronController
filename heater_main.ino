@@ -19,16 +19,16 @@
 #define OLED_RESET 16
 
 // MAX6675 Pins
-#define thermoDO 7
-#define thermoCS 6
-#define thermoCLK 5
+#define solderThermoDO 8
+#define solderThermoCS 7
+#define solderThermoCLK 6
 
-// Encodr pin
-#define encoderCLK 2
-#define encoderDT 3
-#define encoderSW 4
+// Encodr Pins
+#define encoderCLK 3
+#define encoderDT 4
+#define encoderSW 5
 
-// PWM Out pin
+// PWM Out Pins
 #define heaterPin 9
 
 // menu Config Vals
@@ -61,7 +61,7 @@ double Ki = 0;
 double Kd = 0;
 
 PID myPID(&currentTemp, &calculate_PWM, &targetTemp, Kp, Ki, Kd, DIRECT);
-MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
+MAX6675 thermocouple(solderThermoCLK, solderThermoCS, solderThermoDO);
 Encoder myEnc(encoderCLK, encoderDT);
 // Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
