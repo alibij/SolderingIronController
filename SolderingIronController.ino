@@ -38,8 +38,8 @@ short menuId = 0;
 short subMenuId = 0;
 
 // Boost Mode
-bool BoostMode = false;
-bool defaultBoostMode = false;
+bool SolderBoostMode = false;
+bool defaultSolderBoostMode = false;
 
 // Btn vals
 unsigned long btnPushTime = 0;
@@ -47,20 +47,20 @@ bool btnPush = false;
 bool btnPushLong = false;
 
 // Temp variables
-double targetTemp = 0;
-double defaultTargetTemp = 0;
-double maxTemp = 0;
-double minTemp = 50;
+double SolderTargetTemp = 0;
+double SolderdefaultTargetTemp = 0;
+double SolderMaxTemp = 0;
+double SolderMinTemp = 50;
 unsigned long tempLastUpdate = 0;
-double currentTemp = 0;
+double SolderTemp = 0;
 
 // PID computation variables
-double calculate_PWM = 0;
-double Kp = 0;
-double Ki = 0;
-double Kd = 0;
+double SolderCalculate_PWM = 0;
+double S_Kp = 0;
+double S_Ki = 0;
+double S_Kd = 0;
 
-PID myPID(&currentTemp, &calculate_PWM, &targetTemp, Kp, Ki, Kd, DIRECT);
+PID myPID(&SolderTemp, &SolderCalculate_PWM, &SolderTargetTemp, S_Kp, S_Ki, S_Kd, DIRECT);
 MAX6675 thermocouple(solderThermoCLK, solderThermoCS, solderThermoDO);
 Encoder myEnc(encoderCLK, encoderDT);
 // Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -75,35 +75,35 @@ void setup() {
   pinMode(heaterPin, OUTPUT);
   pinMode(encoderSW, INPUT_PULLUP);
 
-  Kp = isnan(readFromEEPROM(8)) ? 1 : readFromEEPROM(8);
-  Ki = isnan(readFromEEPROM(16)) ? 0 : readFromEEPROM(16);
-  Kd = isnan(readFromEEPROM(24)) ? 0 : readFromEEPROM(24);
+  S_Kp = isnan(readFromEEPROM(8)) ? 1 : readFromEEPROM(8);
+  S_Ki = isnan(readFromEEPROM(16)) ? 0 : readFromEEPROM(16);
+  S_Kd = isnan(readFromEEPROM(24)) ? 0 : readFromEEPROM(24);
 
-  defaultTargetTemp = targetTemp = isnan(readFromEEPROM(0)) ? 50 : readFromEEPROM(0);
-  maxTemp = isnan(readFromEEPROM(32)) ? 480 : readFromEEPROM(32);
-  defaultBoostMode = BoostMode = isnan(readFromEEPROM(40)) ? 0 : readFromEEPROM(40);
+  SolderdefaultTargetTemp = SolderTargetTemp = isnan(readFromEEPROM(0)) ? 50 : readFromEEPROM(0);
+  SolderMaxTemp = isnan(readFromEEPROM(32)) ? 480 : readFromEEPROM(32);
+  defaultSolderBoostMode = SolderBoostMode = isnan(readFromEEPROM(40)) ? 0 : readFromEEPROM(40);
 
-  myEnc.write(targetTemp);
+  myEnc.write(SolderTargetTemp);
   myPID.SetMode(AUTOMATIC);
   myPID.SetOutputLimits(0, 255);
-  myPID.SetTunings(Kp, Ki, Kd);
+  myPID.SetTunings(S_Kp, S_Ki, S_Kd);
 }
 
 void loop() {
 
   getTemperature();
   updateSetting();
-  analogWrite(heaterPin, calculate_PWM);
-  if (BoostMode) {
-    calculate_PWM = 255;
-    if (currentTemp >= targetTemp)
-      BoostMode = false;
+  analogWrite(heaterPin, SolderCalculate_PWM);
+  if (SolderBoostMode) {
+    SolderCalculate_PWM = 255;
+    if (SolderTemp >= SolderTargetTemp)
+      SolderBoostMode = false;
   } else {
     myPID.Compute();
   }
   if (openMenu) displayMenu();
   else {
-    displayHome(calculate_PWM);
+    displayHome(SolderCalculate_PWM);
     adjustTargetTemperature();
     // serialPrint();
   }
@@ -113,21 +113,21 @@ void adjustTargetTemperature() {
 
   long Position = myEnc.read();
 
-  if (Position > maxTemp) {
-    myEnc.write(maxTemp);
-    Position = maxTemp;
-  } else if (Position < minTemp) {
-    myEnc.write(minTemp);
-    Position = minTemp;
+  if (Position > SolderMaxTemp) {
+    myEnc.write(SolderMaxTemp);
+    Position = SolderMaxTemp;
+  } else if (Position < SolderMinTemp) {
+    myEnc.write(SolderMinTemp);
+    Position = SolderMinTemp;
   }
-  targetTemp = Position;
+  SolderTargetTemp = Position;
 }
 
 void getTemperature() {
 
   if (millis() - tempLastUpdate > 250) {
     tempLastUpdate = millis();
-    currentTemp = thermocouple.readCelsius();
+    SolderTemp = thermocouple.readCelsius();
   }
 }
 
@@ -137,7 +137,7 @@ void displayHome(double pwm) {
   display.setCursor(5, 4);
   display.setTextColor(SSD1306_WHITE);
   display.setTextSize(4);
-  display.print(int(currentTemp));
+  display.print(int(SolderTemp));
 
 
   display.setCursor(15, 38);
@@ -149,7 +149,7 @@ void displayHome(double pwm) {
   display.setCursor(90, 10);
   // display.setTextColor(SSD1306_BLACK);
   display.setTextSize(2);
-  display.print(int(targetTemp));
+  display.print(int(SolderTargetTemp));
 
 
   display.setCursor(90, 30);
@@ -198,22 +198,22 @@ void displayMenu() {
   display.setTextColor(SSD1306_INVERSE);
 
 
-  if (menuId == 0) {  // PID settings {KP,Ki,Kd}
+  if (menuId == 0) {  // PID settings {Kp,Ki,Kd}
 
     display.setCursor((display.width() / 2) - 7, 53);
     display.print("PID");
 
     display.setCursor(45, 6);
     display.print("Kp : ");
-    display.print(Kp);
+    display.print(S_Kp);
 
     display.setCursor(45, 18);
     display.print("Ki : ");
-    display.print(Ki);
+    display.print(S_Ki);
 
     display.setCursor(45, 30);
     display.print("Kd : ");
-    display.print(Kd);
+    display.print(S_Kd);
 
 
   } else if (menuId == 1) {  // Temp settings {TargetTemp , MaxTemp}
@@ -222,11 +222,11 @@ void displayMenu() {
 
     display.setCursor(17, 6);
     display.print("TargetTemp : ");
-    display.print(int(defaultTargetTemp));
+    display.print(int(SolderdefaultTargetTemp));
 
     display.setCursor(17, 18);
     display.print("MaxTemp    : ");
-    display.print(int(maxTemp));
+    display.print(int(SolderMaxTemp));
 
   } else if (menuId == 2) {  // Boost Mode {BoostMode}
     display.setCursor((display.width() / 2) - 32, 53);
@@ -234,7 +234,7 @@ void displayMenu() {
 
     display.setCursor(17, 18);
     display.print("BoostMode is ");
-    if (defaultBoostMode) display.print("ON");
+    if (defaultSolderBoostMode) display.print("ON");
     else display.print("OFF");
     subMenuId = 1;
   }
@@ -268,21 +268,21 @@ void updateSetting() {
   } else if (openMenu and btnPushLong and inSubMenu) {
     inSubMenu = false;
     if (menuId == 0) {
-      saveToEEPROM(8, Kp);
-      saveToEEPROM(16, Ki);
-      saveToEEPROM(24, Kd);
+      saveToEEPROM(8, S_Kp);
+      saveToEEPROM(16, S_Ki);
+      saveToEEPROM(24, S_Kd);
     }
     if (menuId == 1) {
-      saveToEEPROM(0, defaultTargetTemp);
-      saveToEEPROM(32, maxTemp);
+      saveToEEPROM(0, SolderdefaultTargetTemp);
+      saveToEEPROM(32, SolderMaxTemp);
     }
     if (menuId == 2) {
-      saveToEEPROM(40, defaultBoostMode);
+      saveToEEPROM(40, defaultSolderBoostMode);
     }
 
   } else if (openMenu and btnPushLong and !inSubMenu) {
     openMenu = false;
-    myEnc.write(targetTemp);
+    myEnc.write(SolderTargetTemp);
     display.fillRect(0, 0, 128, 47, SSD1306_BLACK);
   } else if (openMenu and btnPush and inSubMenu) {
     subMenuId++;
@@ -307,22 +307,22 @@ void updateSetting() {
       if (inSubMenu) {
         if (menuId == 0) {
           if (subMenuId == 0)
-            Kp += a / 10;
+            S_Kp += a / 10;
           if (subMenuId == 1)
-            Ki += a / 10;
+            S_Ki += a / 10;
           if (subMenuId == 2)
-            Kd += a / 10;
+            S_Kd += a / 10;
 
         } else if (menuId == 1) {
           if (subMenuId == 0)
-            defaultTargetTemp += a * 5;
+            SolderdefaultTargetTemp += a * 5;
           if (subMenuId == 1)
-            maxTemp += a * 10;
+            SolderMaxTemp += a * 10;
 
         } else if (menuId == 2) {
           if (subMenuId == 1) {
-            if (defaultBoostMode) defaultBoostMode = false;
-            else defaultBoostMode = true;
+            if (defaultSolderBoostMode) defaultSolderBoostMode = false;
+            else defaultSolderBoostMode = true;
           }
         }
       } else {
