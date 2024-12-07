@@ -3,14 +3,20 @@
 #include <Encoder.h>
 #include <PID_v1.h>
 #include <EEPROM.h>
-#include <Wire.h>
+// #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
-#define OLED_RESET -1
-#define SCREEN_ADDRESS 0x3C
+// #define OLED_RESET -1
+// #define SCREEN_ADDRESS 0x3C
+// OLED Pins
+#define OLED_MOSI   17 //SDA
+#define OLED_CLK   18 //SCL
+#define OLED_DC    15
+#define OLED_CS    14
+#define OLED_RESET 16
 
 // MAX6675 Pins
 #define thermoDO 7
@@ -57,11 +63,13 @@ double Kd = 0;
 PID myPID(&currentTemp, &calculate_PWM, &targetTemp, Kp, Ki, Kd, DIRECT);
 MAX6675 thermocouple(thermoCLK, thermoCS, thermoDO);
 Encoder myEnc(encoderCLK, encoderDT);
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+// Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT,OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, OLED_CS);
 
 void setup() {
   // Serial.begin(9600);
-  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+  // display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+  display.begin(SSD1306_SWITCHCAPVCC);
   displayInit();
 
   pinMode(heaterPin, OUTPUT);
