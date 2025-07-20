@@ -10,8 +10,7 @@ It supports temperature regulation, fan control, Boost Mode, a user-friendly men
 
 ## 📷 Preview
 
-![Preview](./board1.png)
-![Preview](./board2.png)
+| ![Image1](./board1.png) | ![Image2](./board2.png) |
 
 ---
 
