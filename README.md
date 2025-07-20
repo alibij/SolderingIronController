@@ -1,111 +1,123 @@
-# Arduino Soldering Iron Driver with PID Control
+# 🔥 Arduino Soldering & Heater Controller
 
-This project is an advanced soldering iron driver built using an Arduino Nano. It uses a MAX6675 thermocouple, a 128x64 OLED display, and a rotary encoder for user input. The system controls a Gordak 952 soldering iron handle with PID regulation to maintain precise temperature settings.
+A complete dual-channel temperature controller for a soldering iron and a hot air heater, based on Arduino.  
+It supports temperature regulation, fan control, Boost Mode, a user-friendly menu system with a rotary encoder, and an OLED display. All configurations are stored in EEPROM.
 
----
-
-## Features
-
-- **PID Temperature Control**: Ensures stable and accurate soldering temperatures.
-- **Boost Mode**: Quickly heats the soldering iron to the target temperature.
-- **User Interface**: 
-  - Rotary encoder for adjusting settings.
-  - OLED display for showing real-time temperature, target temperature, and power percentage.
-- **EEPROM Storage**: Saves user preferences such as PID parameters and target temperatures.
-- **Safety Limits**: Configurable maximum temperature to prevent overheating.
-- **Menu System**: Adjust PID parameters, temperature settings, and Boost mode preferences.
+✅ **Schematic, PCB layout, and BOM are included in the root directory.**  
+✅ **Main code file: `SolderingIronController.ino`**
 
 ---
 
-## Hardware Requirements
+## 📦 Features
 
-- **Microcontroller**: Arduino Nano
-- **Display**: 128x64 OLED (I2C)
-- **Thermocouple Amplifier**: MAX6675
-- **Rotary Encoder**: Rotary encoder with push-button
-- **Soldering Iron Handle**: Gordak 952 (24V DC, 5A)
-- **Power Supply**: 24V DC, 5A
-- **MOSFET or Driver Circuit**: For PWM-based heater control
-
----
-
-## Pin Configuration
-
-| Component       | Arduino Pin |
-|------------------|-------------|
-| MAX6675 DO       | D7          |
-| MAX6675 CS       | D6          |
-| MAX6675 CLK      | D5          |
-| Rotary Encoder CLK | D2        |
-| Rotary Encoder DT  | D3        |
-| Rotary Encoder SW  | D4        |
-| PWM Heater Output  | D9        |
-| OLED (I2C) SDA    | A4         |
-| OLED (I2C) SCL    | A5         |
+- Two-channel temperature monitoring via MAX6675 (for soldering iron and heater)
+- PID control for stable temperature regulation
+- Fan speed control with automatic cooling mode
+- Boost Mode for fast preheating
+- OLED display (128×64, SPI) for live status and menu interface
+- Rotary encoder for easy menu navigation
+- EEPROM storage for persistent settings
+- Menu options for:
+  - PID tuning (Kp, Ki, Kd)
+  - Temperature configuration
+  - Boost Mode toggle
 
 ---
 
-## Software Features
+## 🧰 Hardware Requirements
 
-### Libraries Used
-
-- **[SPI.h](https://www.arduino.cc/reference/en/libraries/spi/)**: For MAX6675 communication.
-- **[Encoder.h](https://www.arduino.cc/reference/en/libraries/encoder/)**: For rotary encoder input.
-- **[PID_v1.h](https://playground.arduino.cc/Code/PIDLibrary/)**: For PID temperature control.
-- **[EEPROM.h](https://www.arduino.cc/en/Reference/EEPROM)**: To save and load settings.
-- **[Wire.h](https://www.arduino.cc/en/Reference/Wire)**: For I2C communication.
-- **[Adafruit_GFX.h](https://github.com/adafruit/Adafruit-GFX-Library)** and **[Adafruit_SSD1306.h](https://github.com/adafruit/Adafruit_SSD1306)**: For OLED display.
-
-### Key Functionalities
-
-1. **Temperature Reading**: Reads current temperature via the MAX6675 thermocouple amplifier.
-2. **PWM Control**: Regulates power to the soldering iron using PID computations.
-3. **User Settings**:
-   - Adjust target temperature using the rotary encoder.
-   - Modify PID parameters in the settings menu.
-   - Enable or disable Boost mode.
-4. **Data Persistence**:
-   - Stores target temperature, max temperature, PID values, and Boost mode settings in EEPROM.
-5. **Display Output**:
-   - Real-time temperature and power usage.
-   - Target temperature and menu options.
+| Component           | Description                               |
+|--------------------|-------------------------------------------|
+| **MCU**            | Arduino (Uno, Nano, Pro Mini, etc.)        |
+| **Display**        | OLED SSD1306 (SPI)                         |
+| **Sensors**        | 2× MAX6675 thermocouples                   |
+| **Encoder**        | Rotary encoder with push-button            |
+| **Outputs**        | PWM pins for solder (Pin 10), heater (Pin 7), fan (Pin 30) |
+| **Toggle Buttons** | Solder enable (Pin 23), Heater enable (Pin 22) |
+| **Others**         | Power drivers (e.g., MOSFETs), connectors, etc. |
 
 ---
 
-## Usage
+## 🚀 How to Use
 
-1. **Setup**:
-   - Connect the components as per the pin configuration table.
-   - Upload the code to the Arduino Nano.
-2. **Adjust Temperature**:
-   - Rotate the encoder to set the desired target temperature.
-3. **Enter Menu**:
-   - Long press the encoder button to access settings.
-   - Modify PID parameters, temperature limits, or Boost mode preferences.
-4. **Save Settings**:
-   - Long press the encoder button in a submenu to save settings to EEPROM.
+1. **Install Required Libraries** from Arduino Library Manager:
+   - `Adafruit_GFX`
+   - `Adafruit_SSD1306`
+   - `Encoder`
+   - `PID_v1`
+   - `MAX6675`
+   - `EEPROM`
 
----
+2. **Upload the Sketch**
+   - Open `SolderingIronController.ino` in the Arduino IDE
+   - Select your board and port
+   - Upload the code
 
-## License
+3. **Connect the Hardware**
+   - Refer to `schematic.sch` for wiring details
+   - Connect thermocouples, display, fan, outputs, encoder, and buttons
 
-This project is released under the **MIT License**, which allows free use, modification, and distribution with proper attribution. For details, see the [LICENSE](LICENSE) file.
-
----
-
-## Future Enhancements
-
-- Add over-temperature protection with automatic shutdown.
-- Implement a sleep mode to reduce power consumption when idle.
-- Expand menu functionality for more advanced customization options.
+4. **Power On & Operate**
+   - Use the encoder to navigate the menu and configure settings
+   - Default settings are loaded from EEPROM or initialized with safe values
 
 ---
 
-## Acknowledgments
+## 🧪 EEPROM & Menu System
 
-- Inspired by existing soldering iron controllers.
-- Utilizes open-source libraries for efficient development.
+- The controller stores all user settings (PID values, temperatures, boost mode) in EEPROM
+- Menu interface allows:
+  - PID tuning for each channel
+  - Temperature setpoints and limits
+  - Toggling Boost Mode
+  - Saving settings via long press
 
 ---
 
-Feel free to contribute to this project by submitting issues or pull requests on GitHub!
+## 📋 Bill of Materials (BOM)
+
+📄 `bom_list.csv` contains all required components including:
+
+- MAX6675 modules ×2  
+- OLED display (SPI, 128×64)  
+- Rotary encoder with push button  
+- Arduino-compatible microcontroller  
+- Power MOSFETs or relays  
+- Passive components and connectors  
+
+---
+
+## 🧠 System Behavior
+
+- Alternating temperature updates every 250ms
+- PID handles PWM output based on setpoint
+- Cooling fan auto-activates when heater is off but hot
+- Boost Mode sets PWM to 255 until temperature is reached
+- Bar graph displays show PWM output visually
+
+---
+
+## 📈 Future Enhancements
+
+- [ ] USB/serial remote control interface
+- [ ] ESP32 support for Wi-Fi control
+- [ ] Graphical UI improvements
+- [ ] Auto power-off and sleep features
+
+---
+
+## 👨‍🔧 Author
+
+Developed by **[AliBijandi]**  
+GitHub: [https://github.com/alibij](https://github.com/alibij)
+
+---
+
+## 📝 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+✅ **All design files (schematic, PCB, BOM) are located in the main folder.**  
+✅ **Main Arduino sketch: `SolderingIronController.ino`**
