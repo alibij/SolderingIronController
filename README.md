@@ -45,6 +45,19 @@ It supports temperature regulation, fan control, Boost Mode, a user-friendly men
 
 ---
 
+## ⚠️ Important Note on ATmega644 Bootloader
+
+To run this project on an **ATmega644** microcontroller, you **must burn the Arduino bootloader** compatible with the ATmega644.  
+Use the **Bobuino pinout** for correct ISP connections.  
+This ensures proper uploading of sketches via the Arduino IDE.
+
+---
+
+> **Small note:**  
+> Burning the bootloader enables easy programming and Arduino IDE compatibility with the ATmega644 MCU.
+
+---
+
 ## 🚀 How to Use
 
 1. **Install Required Libraries** from Arduino Library Manager:
