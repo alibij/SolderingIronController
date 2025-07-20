@@ -45,6 +45,21 @@ It supports temperature regulation, fan control, Boost Mode, a user-friendly men
 
 ---
 
+## ⚙️ Installing ATmega644 Board Support
+
+To program the ATmega644 MCU easily, install the **MightyCore** package in Arduino IDE:
+
+1. Open **File > Preferences**  
+2. In **Additional Boards Manager URLs**, add:  
+   `https://mcudude.github.io/MightyCore/package_MCUdude_MightyCore_index.json`  
+3. Open **Tools > Board > Boards Manager**  
+4. Search for **MightyCore** and install it  
+5. Select your ATmega644 board from **Tools > Board**
+
+This lets you burn bootloaders and upload sketches to ATmega644 smoothly.
+
+---
+
 ## ⚠️ Important Note on ATmega644 Bootloader
 
 To run this project on an **ATmega644** microcontroller, you **must burn the Arduino bootloader** compatible with the ATmega644.  
