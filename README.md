@@ -8,6 +8,13 @@ It supports temperature regulation, fan control, Boost Mode, a user-friendly men
 
 ---
 
+## 📷 Preview
+
+![Preview](./board1.png)
+![Preview](./board2.png)
+
+---
+
 ## 📦 Features
 
 - Two-channel temperature monitoring via MAX6675 (for soldering iron and heater)
