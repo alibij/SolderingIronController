@@ -188,7 +188,7 @@ void applyPower() {
     if (HeaterTemp > 50) {
       Fan_PWM = 130;
       CoolingMode = true;
-    } else {
+    } else if (HeaterTemp < 35){
       Fan_PWM = 0;
       CoolingMode = false;
     }
@@ -201,7 +201,7 @@ void applyPower() {
         SolderBoostMode = false;
     } else
       SolderPID.Compute();
-  } else {
+  } else{
     SolderCalculate_PWM = 0;
     SolderBoostMode = defaultSolderBoostMode;
     if (homeId == 0) homeId = 1;
@@ -221,7 +221,7 @@ void applyPower() {
   }
 
   analogWrite(solderPin, SolderCalculate_PWM);
-  analogWrite(heaterPin, HeaterCalculate_PWM);
+  analogWrite(heaterPin, 255 - HeaterCalculate_PWM);
   analogWrite(fanPin, Fan_PWM);
 }
 
