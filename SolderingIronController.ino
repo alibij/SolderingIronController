@@ -221,7 +221,7 @@ void applyPower() {
   }
 
   analogWrite(solderPin, SolderCalculate_PWM);
-  analogWrite(heaterPin, HeaterCalculate_PWM);
+  analogWrite(heaterPin, 255 - HeaterCalculate_PWM);
   analogWrite(fanPin, Fan_PWM);
 }
 
