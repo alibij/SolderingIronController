@@ -184,15 +184,27 @@ void applyPower() {
   Solder_ON = !digitalRead(Solder_Key_Pin);
   Heater_ON = !digitalRead(Heater_Key_Pin);
 
-  if (!Heater_ON) {
-    if (HeaterTemp > 50) {
+  if (Heater_ON) {
+    if (HeaterBoostMode) {
+      HeaterCalculate_PWM = 255;
+      if (HeaterTemp >= HeaterTargetTemp)
+      HeaterBoostMode = false;
+    } else {
+      HeaterPID.Compute();
+      if (Fan_PWM < Fan_Min_PWM) Fan_PWM = Fan_Min_PWM;
+    }
+  } else {
+    if (HeaterTemp > 50 && !CoolingMode) {
       Fan_PWM = 130;
       CoolingMode = true;
-    } else {
+    } else if (HeaterTemp < 35 && CoolingMode){
       Fan_PWM = 0;
       CoolingMode = false;
     }
-  } else if (Fan_PWM < Fan_Min_PWM) Fan_PWM = 52;
+    HeaterCalculate_PWM = 0;
+    HeaterBoostMode = defaultHeaterBoostMode;
+    if (homeId == 1 || homeId == 2) homeId = 0;
+  }
 
   if (Solder_ON) {
     if (SolderBoostMode) {
@@ -201,23 +213,10 @@ void applyPower() {
         SolderBoostMode = false;
     } else
       SolderPID.Compute();
-  } else {
+  } else{
     SolderCalculate_PWM = 0;
     SolderBoostMode = defaultSolderBoostMode;
     if (homeId == 0) homeId = 1;
-  }
-
-  if (Heater_ON) {
-    if (HeaterBoostMode) {
-      HeaterCalculate_PWM = 255;
-      if (HeaterTemp >= HeaterTargetTemp)
-        HeaterBoostMode = false;
-    } else
-      HeaterPID.Compute();
-  } else {
-    HeaterCalculate_PWM = 0;
-    HeaterBoostMode = defaultHeaterBoostMode;
-    if (homeId == 1 || homeId == 2) homeId = 0;
   }
 
   analogWrite(solderPin, SolderCalculate_PWM);
