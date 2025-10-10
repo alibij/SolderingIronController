@@ -1,6 +1,6 @@
 
 #include <SPI.h>
-#include "max6675.h"
+#include <max6675.h>
 #include <Encoder.h>
 #include <PID_v1.h>
 #include <EEPROM.h>
@@ -194,13 +194,14 @@ void applyPower() {
       if (Fan_PWM < Fan_Min_PWM) Fan_PWM = Fan_Min_PWM;
     }
   } else {
-    if (HeaterTemp > 50 && !CoolingMode) {
-      Fan_PWM = 130;
+    if (HeaterTemp > 70) {
       CoolingMode = true;
-    } else if (HeaterTemp < 35 && CoolingMode){
-      Fan_PWM = 0;
+    } 
+    else if (HeaterTemp < 35){
       CoolingMode = false;
     }
+    Fan_PWM = (CoolingMode) ? 130 : 0;
+      
     HeaterCalculate_PWM = 0;
     HeaterBoostMode = defaultHeaterBoostMode;
     if (homeId == 1 || homeId == 2) homeId = 0;
