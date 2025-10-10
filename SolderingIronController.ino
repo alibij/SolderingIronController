@@ -42,7 +42,7 @@
 
 // fan vals
 int Fan_PWM = 50;
-#define Fan_Min_PWM 25
+#define Fan_Min_PWM 50
 
 // menu location
 #define Menu0 3
