@@ -516,10 +516,13 @@ void MenuHandler() {
     switch (homeId) {
       case 0:
         myEnc.write(SolderTargetTemp);
+        break;
       case 1:
         myEnc.write(Fan_PWM);
+        break;
       case 2:
         myEnc.write(HeaterTargetTemp);
+        break;
     }
   } else if (openMenu and btnPush and inSubMenu) {
     subMenuId++;
