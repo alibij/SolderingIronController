@@ -269,8 +269,13 @@ void getTemperature() {
   if (millis() - TempLastUpdate >= 250) {
     TempLastUpdate = millis();
 
-    if (TempLastUpdateState) SolderTemp = SolderThermocouple.readCelsius();
-    else HeaterTemp = HeaterThermocouple.readCelsius();
+    if (TempLastUpdateState) {
+      float temp = SolderThermocouple.readCelsius();
+      if (!isnan(temp)) SolderTemp = temp;
+    } else {
+      float temp = HeaterThermocouple.readCelsius();
+      if (!isnan(temp)) HeaterTemp = temp;
+    }
 
     TempLastUpdateState = !TempLastUpdateState;
   }
