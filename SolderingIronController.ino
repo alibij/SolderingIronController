@@ -355,8 +355,10 @@ void displayHome() {
 }
 
 void saveToEEPROM(int address, float value) {
-  if (value != readFromEEPROM(address * 8))
+  float oldv = readFromEEPROM(address);
+  if (fabs(value - oldv) > 0.0001f) {
     EEPROM.put(address * 8, value);
+  }
 }
 
 float readFromEEPROM(int address) {
